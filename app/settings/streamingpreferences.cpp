@@ -80,6 +80,7 @@
 #define SER_STEAMCONTROLLERHAPTICPULSESCALE "steamcontrollerhapticpulsescale"
 #define SER_STEAMCONTROLLERHAPTICMASTERGAIN "steamcontrollerhapticmastergain"
 #define SER_KEEPAWAKE "keepawake"
+#define SER_BOSSKEY "bosskey"
 #define SER_LANGUAGE "language"
 #define SER_RENDERER "renderer"
 
@@ -248,6 +249,7 @@ void StreamingPreferences::reload()
     reverseScrollDirection = settings.value(SER_REVERSESCROLL, false).toBool();
     swapFaceButtons = settings.value(SER_SWAPFACEBUTTONS, false).toBool();
     keepAwake = settings.value(SER_KEEPAWAKE, true).toBool();
+    bossKeyEnabled = settings.value(SER_BOSSKEY, false).toBool();
     enableHdr = settings.value(SER_HDR, false).toBool();
     captureSysKeysMode = static_cast<CaptureSysKeysMode>(settings.value(SER_CAPTURESYSKEYS,
                                                          static_cast<int>(CaptureSysKeysMode::CSK_OFF)).toInt());
@@ -502,6 +504,7 @@ void StreamingPreferences::save()
     settings.setValue(SER_STEAMCONTROLLERHAPTICBOOST, steamControllerHapticBoost);
     settings.setValue(SER_STEAMCONTROLLERHAPTICPULSESCALE, steamControllerHapticPulseScale);
     settings.setValue(SER_STEAMCONTROLLERHAPTICMASTERGAIN, steamControllerHapticMasterGain);
+    settings.setValue(SER_BOSSKEY, bossKeyEnabled);
 }
 
 void StreamingPreferences::setDiagnosticsStatus(const QString& message)

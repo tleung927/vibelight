@@ -98,6 +98,10 @@ public:
     }
 };
 
+// Pushed as an SDL_USEREVENT code by BossKey to ask the session to hide or
+// restore its window from its own event loop
+#define SDL_CODE_TOGGLE_BOSS_KEY 106
+
 class Session : public QObject
 {
     Q_OBJECT
@@ -188,6 +192,8 @@ private:
                              int& width, int& height);
 
     void toggleFullscreen();
+
+    void toggleBossKeyHide();
 
     void notifyMouseEmulationMode(bool enabled);
 
@@ -307,6 +313,8 @@ private:
     SDL_mutex* m_DecoderLock;
     bool m_AudioDisabled;
     bool m_AudioMuted;
+    bool m_BossKeyHidden;
+    bool m_BossKeyRestoreFullScreen;
     Uint32 m_FullScreenFlag;
     QQuickWindow* m_QtWindow;
     bool m_UnexpectedTermination;

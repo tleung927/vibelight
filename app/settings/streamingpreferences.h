@@ -213,6 +213,7 @@ public:
     Q_PROPERTY(bool reverseScrollDirection MEMBER reverseScrollDirection NOTIFY reverseScrollDirectionChanged)
     Q_PROPERTY(bool swapFaceButtons MEMBER swapFaceButtons NOTIFY swapFaceButtonsChanged)
     Q_PROPERTY(bool keepAwake MEMBER keepAwake NOTIFY keepAwakeChanged)
+    Q_PROPERTY(bool bossKeyEnabled MEMBER bossKeyEnabled NOTIFY bossKeyEnabledChanged)
     Q_PROPERTY(CaptureSysKeysMode captureSysKeysMode MEMBER captureSysKeysMode NOTIFY captureSysKeysModeChanged)
     Q_PROPERTY(bool steamControllerDriver MEMBER steamControllerDriver NOTIFY steamControllerChanged)
     Q_PROPERTY(bool steamControllerMotion MEMBER steamControllerMotion NOTIFY steamControllerChanged)
@@ -275,6 +276,7 @@ public:
     bool reverseScrollDirection;
     bool swapFaceButtons;
     bool keepAwake;
+    bool bossKeyEnabled;
     int packetSize;
     int pyroWavePaceMbps;
     AudioConfig audioConfig;
@@ -349,6 +351,7 @@ signals:
     void captureSysKeysModeChanged();
     void steamControllerChanged();
     void keepAwakeChanged();
+    void bossKeyEnabledChanged();
     void languageChanged();
     void rendererSelectionChanged();
 

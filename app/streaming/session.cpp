@@ -40,6 +40,11 @@
 #define SDL_CODE_GAMECONTROLLER_SET_MOTION_EVENT_STATE 103
 #define SDL_CODE_GAMECONTROLLER_SET_CONTROLLER_LED 104
 #define SDL_CODE_GAMECONTROLLER_SET_ADAPTIVE_TRIGGERS 105
+// NB: SDL_CODE_TOGGLE_BOSS_KEY (106) lives in session.h so BossKey can use it too
+
+#ifdef Q_OS_WIN32
+#include "bosskey.h"
+#endif
 
 #include <openssl/rand.h>
 
@@ -630,6 +635,8 @@ Session::Session(NvComputer* computer, NvApp& app, StreamingPreferences *prefere
       m_VideoDecoder(nullptr),
       m_DecoderLock(SDL_CreateMutex()),
       m_AudioMuted(false),
+      m_BossKeyHidden(false),
+      m_BossKeyRestoreFullScreen(false),
       m_QtWindow(nullptr),
       m_UnexpectedTermination(true), // Failure prior to streaming is unexpected
       m_InputHandler(nullptr),
@@ -1775,6 +1782,66 @@ void Session::toggleFullscreen()
     m_InputHandler->updatePointerRegionLock();
 }
 
+void Session::toggleBossKeyHide()
+{
+    if (!m_BossKeyHidden) {
+        SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+                    "Hiding stream window for boss key");
+
+        m_BossKeyHidden = true;
+
+        // Drop the mouse and keyboard grabs so the user can use their desktop
+        // normally while we're invisible. This also latches a flag in the input
+        // handler that prevents anything from re-grabbing while we're hidden.
+        m_InputHandler->notifyBossKeyHidden(true);
+
+        // An exclusive full-screen window can't simply be hidden: the display stays
+        // in our video mode and the desktop can black out. Leave full-screen while
+        // we're still visible and remember to restore it when we come back.
+        m_BossKeyRestoreFullScreen = m_FullScreenFlag == SDL_WINDOW_FULLSCREEN &&
+                                     (SDL_GetWindowFlags(m_Window) & SDL_WINDOW_FULLSCREEN);
+        if (m_BossKeyRestoreFullScreen) {
+#if defined(Q_OS_WIN32) || defined(Q_OS_DARWIN)
+            // Destroy the decoder before leaving full-screen for the same reasons
+            // documented in toggleFullscreen().
+            SDL_LockMutex(m_DecoderLock);
+            delete m_VideoDecoder;
+            m_VideoDecoder = nullptr;
+            SDL_UnlockMutex(m_DecoderLock);
+#endif
+            SDL_SetWindowFullscreen(m_Window, 0);
+        }
+
+        // On Windows this is ShowWindow(SW_HIDE), which also removes our taskbar
+        // button and Alt+Tab entry.
+        SDL_HideWindow(m_Window);
+    }
+    else {
+        SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+                    "Restoring stream window from boss key");
+
+        SDL_ShowWindow(m_Window);
+        SDL_RaiseWindow(m_Window);
+
+        // Re-enter full-screen only after the window is visible again. Asking SDL to
+        // enter exclusive full-screen while we're still hidden would modeset the
+        // display with nothing on screen to show for it.
+        //
+        // The decoder is already gone (we destroyed it on the way out), so the
+        // SDL_WINDOWEVENT_SHOWN event queued above will recreate the renderer once
+        // we return to the event loop, by which point we're full-screen again.
+        if (m_BossKeyRestoreFullScreen) {
+            m_BossKeyRestoreFullScreen = false;
+            SDL_SetWindowFullscreen(m_Window, m_FullScreenFlag);
+        }
+
+        m_BossKeyHidden = false;
+
+        // Restore whatever grab state our capture settings call for
+        m_InputHandler->notifyBossKeyHidden(false);
+    }
+}
+
 void Session::notifyMouseEmulationMode(bool enabled)
 {
     m_MouseEmulationRefCount += enabled ? 1 : -1;
@@ -2402,6 +2469,8 @@ void Session::exec()
                 break;
             case SDL_CODE_STEAM_CONTROLLER_LINK:
                 m_InputHandler->handleSteamControllerEvent(&event.user);
+            case SDL_CODE_TOGGLE_BOSS_KEY:
+                toggleBossKeyHide();
                 break;
             default:
                 SDL_assert(false);
@@ -2477,7 +2546,9 @@ void Session::exec()
             // us to start drawing on the screen even while our window is minimized. Minimizing on Windows also
             // moves the window to -32000, -32000 which can cause a false window display index change. Avoid
             // that whole mess by never recreating the decoder if we're minimized.
-            else if (SDL_GetWindowFlags(m_Window) & SDL_WINDOW_MINIMIZED) {
+            else if (SDL_GetWindowFlags(m_Window) & (SDL_WINDOW_MINIMIZED | SDL_WINDOW_HIDDEN)) {
+                // The same applies while the boss key has us hidden. We recreate the
+                // decoder from the SDL_WINDOWEVENT_SHOWN event when we come back.
                 break;
             }
 #endif
@@ -2792,6 +2863,15 @@ DispatchDeferredCleanup:
     }
 
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
+
+#ifdef Q_OS_WIN32
+    // If the stream ended while the boss key had us hidden, StreamSegue.qml is about
+    // to make the Qt window visible again. Hand our hidden state over to the boss key
+    // so it can hide the launcher instead of letting it pop back into view.
+    if (m_BossKeyHidden) {
+        BossKey::get()->notifySessionEndedWhileHidden(this);
+    }
+#endif
 
     // Cleanup can take a while, so dispatch it to a worker thread.
     // When it is complete, it will release our s_ActiveSessionSemaphore
