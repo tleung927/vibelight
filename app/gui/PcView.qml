@@ -154,10 +154,55 @@ CenteredGridView {
             width: parent.width
             anchors.top: pcIcon.bottom
             anchors.bottom: parent.bottom
-            font.pointSize: 36
+            anchors.bottomMargin: 46
+            font.pointSize: 22
+            font.weight: Font.DemiBold
+            font.family: Theme.fontFamily
+            color: Theme.text
             horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             wrapMode: Text.Wrap
             elide: Text.ElideRight
+        }
+
+        // Status chip: readable state at a glance instead of only an overlay icon
+        Rectangle {
+            id: statusChip
+            property color tone: model.statusUnknown ? Theme.textDim :
+                                 !model.online ? Theme.offline :
+                                 !model.paired ? Theme.locked : Theme.online
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 14
+            width: chipRow.width + 24
+            height: 26
+            radius: height / 2
+            color: Qt.rgba(tone.r, tone.g, tone.b, 0.15)
+            border.width: 1
+            border.color: Qt.rgba(tone.r, tone.g, tone.b, 0.45)
+
+            Row {
+                id: chipRow
+                anchors.centerIn: parent
+                spacing: 6
+
+                Rectangle {
+                    width: 8; height: 8; radius: 4
+                    color: statusChip.tone
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label {
+                    text: model.statusUnknown ? qsTr("Checking...") :
+                          !model.online ? qsTr("Offline") :
+                          !model.paired ? qsTr("Not paired") : qsTr("Online")
+                    font.pointSize: 11
+                    font.family: Theme.fontFamily
+                    color: statusChip.tone
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
 
         Loader {

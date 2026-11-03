@@ -34,6 +34,7 @@
 #if defined(Q_OS_WIN32)
 #include "antihookingprotection.h"
 #include "bosskey.h"
+#include <dwmapi.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -1130,6 +1131,21 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN32
         // Set up the global Ctrl+` boss key hotkey now that we have a window to hide
         BossKey::get()->initialize(qobject_cast<QQuickWindow*>(engine.rootObjects().first()));
+
+        // Match the title bar to the Vibelight theme (Windows 11; harmlessly ignored on older builds).
+        // The attribute numbers are DWMWA_USE_IMMERSIVE_DARK_MODE, DWMWA_BORDER_COLOR,
+        // DWMWA_CAPTION_COLOR and DWMWA_TEXT_COLOR, spelled out so older SDKs still compile.
+        if (auto* rootWindow = qobject_cast<QQuickWindow*>(engine.rootObjects().first())) {
+            HWND hwnd = reinterpret_cast<HWND>(rootWindow->winId());
+            const BOOL dark = TRUE;
+            const COLORREF border = RGB(0x2A, 0x32, 0x43);
+            const COLORREF caption = RGB(0x15, 0x19, 0x22);
+            const COLORREF captionText = RGB(0xE8, 0xEC, 0xF4);
+            DwmSetWindowAttribute(hwnd, 20, &dark, sizeof(dark));
+            DwmSetWindowAttribute(hwnd, 34, &border, sizeof(border));
+            DwmSetWindowAttribute(hwnd, 35, &caption, sizeof(caption));
+            DwmSetWindowAttribute(hwnd, 36, &captionText, sizeof(captionText));
+        }
 #endif
     }
 

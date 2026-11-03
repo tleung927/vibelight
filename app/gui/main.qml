@@ -2,7 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
-import QtQuick.Controls.Material 2.2
+import QtQuick.Controls.Material
 
 import ComputerManager 1.0
 import AutoUpdateChecker 1.0
@@ -21,16 +21,18 @@ ApplicationWindow {
     id: window
     width: 1280
     height: 600
+    title: Theme.brandName
+
+    // Vibelight look: dark theme, brand accent, softly rounded controls
+    Material.theme: Material.Dark
+    Material.accent: Theme.accent
+    Material.primary: Theme.surface
+    Material.background: Theme.bg
+    Material.roundedScale: Material.MediumScale
+    color: Theme.bg
 
     // This function runs prior to creation of the initial StackView item
     function doEarlyInit() {
-        // Override the background color to Material 2 colors for Qt 6.5+
-        // in order to improve contrast between GFE's placeholder box art
-        // and the background of the app grid.
-        if (SystemProperties.usesMaterial3Theme) {
-            Material.background = "#303030"
-        }
-
         SdlGamepadKeyNavigation.enable()
     }
 
@@ -239,12 +241,24 @@ ApplicationWindow {
         anchors.topMargin: 5
         anchors.bottomMargin: 5
 
+        background: Rectangle {
+            color: Theme.surface
+
+            Rectangle {
+                anchors.bottom: parent.bottom
+                width: parent.width
+                height: 1
+                color: Theme.outline
+            }
+        }
+
         Label {
             id: titleLabel
             visible: toolBar.width > 700
             anchors.fill: parent
             text: stackView.currentItem.objectName
             font.pointSize: 20
+            font.family: Theme.fontFamily
             elide: Label.ElideRight
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
@@ -267,6 +281,18 @@ ApplicationWindow {
                 Keys.onDownPressed: {
                     stackView.currentItem.forceActiveFocus(Qt.TabFocus)
                 }
+            }
+
+            // Brand mark. Hidden on narrow windows so it can't collide with the centered title.
+            Label {
+                visible: toolBar.width > 900
+                textFormat: Text.RichText
+                text: "<font color='" + Theme.accent + "'>Vibe</font>light"
+                font.pointSize: 16
+                font.bold: true
+                font.family: Theme.fontFamily
+                verticalAlignment: Qt.AlignVCenter
+                Layout.leftMargin: 4
             }
 
             // This label will appear when the window gets too small and
