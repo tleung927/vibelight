@@ -119,11 +119,11 @@ Flickable {
         width: settingsPage.width / 2
         spacing: 15
 
-        GroupBox {
+        VibeGroupBox {
             id: basicSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("Basic Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("Basic Settings") + "</font>"
             font.pointSize: 12
 
             Column {
@@ -743,7 +743,7 @@ Flickable {
                     ToolTip.text: qsTr("PyroWave is a GPU wavelet codec. It needs a wired connection with hundreds of Mbps to spare and a host with PyroWave support; other hosts fall back to H.264. On Linux, GPU readback and upload may limit frame rate.")
                 }
 
-                CheckBox {
+                Switch {
                     id: enableYUV444
                     width: parent.width
                     text: qsTr("Enable YUV 4:4:4")
@@ -1769,7 +1769,7 @@ Flickable {
                     spacing: 5
                     width: parent.width
 
-                    CheckBox {
+                    Switch {
                         id: vsyncCheck
                         hoverEnabled: true
                         text: qsTr("V-Sync")
@@ -1785,7 +1785,7 @@ Flickable {
                         ToolTip.text: qsTr("Disabling V-Sync allows sub-frame rendering latency, but it can display visible tearing")
                     }
 
-                    CheckBox {
+                    Switch {
                         id: framePacingCheck
                         hoverEnabled: true
                         text: qsTr("Frame pacing")
@@ -1801,7 +1801,7 @@ Flickable {
                         ToolTip.text: qsTr("Frame pacing reduces micro-stutter by delaying frames that come in too early")
                     }
 
-                    CheckBox {
+                    Switch {
                         hoverEnabled: true
                         text: qsTr("VRR")
                         font.pointSize: 12
@@ -1836,7 +1836,7 @@ Flickable {
                     onToleranceEdited: function(value) { StreamingPreferences.vrrToleranceUs = value }
                 }
 
-                CheckBox {
+                Switch {
                     hoverEnabled: true
                     text: qsTr("Reduce judder")
                     font.pointSize: 12
@@ -1852,7 +1852,7 @@ Flickable {
                                   qsTr("Reconnect the stream after changing this setting.")
                 }
 
-                CheckBox {
+                Switch {
                     hoverEnabled: true
                     text: qsTr("Absorb microstutter (adds latency)")
                     font.pointSize: 12
@@ -1869,7 +1869,7 @@ Flickable {
                                   qsTr("Reconnect the stream after changing this setting.")
                 }
 
-                CheckBox {
+                Switch {
                     hoverEnabled: true
                     text: qsTr("High-performance GPU power while streaming")
                     font.pointSize: 12
@@ -1884,7 +1884,7 @@ Flickable {
                                   qsTr("Takes effect at the start of the next stream.")
                 }
 
-                CheckBox {
+                Switch {
                     id: enableHdr
                     width: parent.width
                     text: qsTr("Enable HDR")
@@ -1916,17 +1916,17 @@ Flickable {
             }
         }
 
-        GroupBox {
+        VibeGroupBox {
             width: parent.width - (parent.leftPadding + parent.rightPadding)
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("VRR diagnostics") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("VRR diagnostics") + "</font>"
             font.pointSize: 12
 
             Column {
                 anchors.fill: parent
                 spacing: 8
 
-                CheckBox {
+                Switch {
                     id: traceVrrFramesCheckBox
                     text: qsTr("Trace VRR frames for debugging")
                     font.pointSize: 12
@@ -1973,12 +1973,12 @@ Flickable {
             }
         }
 
-        GroupBox {
+        VibeGroupBox {
 
             id: audioSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("Audio Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("Audio Settings") + "</font>"
             font.pointSize: 12
 
             Column {
@@ -2032,7 +2032,7 @@ Flickable {
                 }
 
 
-                CheckBox {
+                Switch {
                     id: audioPcCheck
                     width: parent.width
                     text: qsTr("Mute host PC speakers while streaming")
@@ -2048,7 +2048,7 @@ Flickable {
                     ToolTip.text: qsTr("You must restart any game currently in progress for this setting to take effect")
                 }
 
-                CheckBox {
+                Switch {
                     id: muteOnFocusLossCheck
                     width: parent.width
                     text: qsTr("Mute audio stream when Moonlight is not the active window")
@@ -2067,18 +2067,18 @@ Flickable {
             }
         }
 
-        GroupBox {
+        VibeGroupBox {
             id: hostSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("Host Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("Host Settings") + "</font>"
             font.pointSize: 12
 
             Column {
                 anchors.fill: parent
                 spacing: 5
 
-                CheckBox {
+                Switch {
                     id: optimizeGameSettingsCheck
                     width: parent.width
                     text: qsTr("Optimize game settings for streaming")
@@ -2089,7 +2089,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: quitAppAfter
                     width: parent.width
                     text: qsTr("Quit app on host PC after ending stream")
@@ -2107,11 +2107,11 @@ Flickable {
             }
         }
 
-        GroupBox {
+        VibeGroupBox {
             id: uiSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("UI Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("UI Settings") + "</font>"
             font.pointSize: 12
 
             Column {
@@ -2350,7 +2350,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: connectionWarningsCheck
                     width: parent.width
                     text: qsTr("Show connection quality warnings")
@@ -2361,7 +2361,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: hideVrrBufferWarningsCheck
                     width: parent.width
                     text: qsTr("Hide VRR buffer limit warnings")
@@ -2372,7 +2372,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: configurationWarningsCheck
                     width: parent.width
                     text: qsTr("Show configuration warnings")
@@ -2383,7 +2383,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     visible: SystemProperties.hasDiscordIntegration
                     id: discordPresenceCheck
                     width: parent.width
@@ -2400,7 +2400,7 @@ Flickable {
                     ToolTip.text: qsTr("Updates your Discord status to display the name of the game you're streaming.")
                 }
 
-                CheckBox {
+                Switch {
                     id: keepAwakeCheck
                     width: parent.width
                     text: qsTr("Keep the display awake while streaming")
@@ -2427,18 +2427,18 @@ Flickable {
         width: settingsPage.width / 2
         spacing: 15
 
-        GroupBox {
+        VibeGroupBox {
             id: inputSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("Input Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("Input Settings") + "</font>"
             font.pointSize: 12
 
             Column {
                 anchors.fill: parent
                 spacing: 5
 
-                CheckBox {
+                Switch {
                     id: absoluteMouseCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2461,7 +2461,7 @@ Flickable {
                     spacing: 5
                     width: parent.width
 
-                    CheckBox {
+                    Switch {
                         id: captureSysKeysCheck
                         hoverEnabled: true
                         text: qsTr("Capture system keyboard shortcuts")
@@ -2532,7 +2532,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: absoluteTouchCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2549,7 +2549,7 @@ Flickable {
                     ToolTip.text: qsTr("When checked, the touchscreen acts like a trackpad. When unchecked, the touchscreen will directly control the mouse pointer.")
                 }
 
-                CheckBox {
+                Switch {
                     id: swapMouseButtonsCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2561,7 +2561,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: reverseScrollButtonsCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2573,11 +2573,11 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: bossKeyCheck
                     hoverEnabled: true
                     width: parent.width
-                    text: qsTr("Enable boss key (Ctrl+`) to hide and restore Moonlight")
+                    text: qsTr("Enable boss key (Ctrl+`) to hide and restore Vibelight")
                     font.pointSize: 12
                     visible: SystemProperties.isWindows
                     checked: StreamingPreferences.bossKeyEnabled
@@ -2597,18 +2597,18 @@ Flickable {
             }
         }
 
-        GroupBox {
+        VibeGroupBox {
             id: gamepadSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("Gamepad Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("Gamepad Settings") + "</font>"
             font.pointSize: 12
 
             Column {
                 anchors.fill: parent
                 spacing: 5
 
-                CheckBox {
+                Switch {
                     id: swapFaceButtonsCheck
                     width: parent.width
                     text: qsTr("Swap A/B and X/Y gamepad buttons")
@@ -2624,7 +2624,7 @@ Flickable {
                     ToolTip.text: qsTr("This switches gamepads into a Nintendo-style button layout")
                 }
 
-                CheckBox {
+                Switch {
                     id: singleControllerCheck
                     width: parent.width
                     text: qsTr("Force gamepad #1 always connected")
@@ -2641,7 +2641,7 @@ Flickable {
                                   qsTr("Only enable this option when streaming a game that doesn't support gamepads being connected after startup.")
                 }
 
-                CheckBox {
+                Switch {
                     id: gamepadMouseCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2653,7 +2653,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: backgroundGamepadCheck
                     width: parent.width
                     text: qsTr("Process gamepad input when Moonlight is in the background")
@@ -2670,7 +2670,7 @@ Flickable {
                     ToolTip.text: qsTr("Allows Moonlight to capture gamepad inputs even if it's not the current window in focus")
                 }
 
-                CheckBox {
+                Switch {
                     id: steamControllerCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2689,7 +2689,7 @@ Flickable {
                                   qsTr("NEVER start a controller firmware update from Steam while streaming. The update would target the virtual controller on the host, not the real controller; it cannot succeed and may leave Steam confused. Update firmware with the controller connected directly to a PC running Steam.")
                 }
 
-                CheckBox {
+                Switch {
                     id: steamControllerMotionCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2707,7 +2707,7 @@ Flickable {
                     ToolTip.text: qsTr("Asks the firmware for the raw IMU and advertises motion to the host; the host decides when it wants the reports.")
                 }
 
-                CheckBox {
+                Switch {
                     id: steamControllerSplitPadsCheck
                     hoverEnabled: true
                     width: parent.width
@@ -2834,7 +2834,7 @@ Flickable {
                     ToolTip.text: qsTr("A rumble from the host is refreshed on the controller every 40 ms until this time passes, then the motors stop; choose Unlimited only when the host reliably sends a stop.")
                 }
 
-                CheckBox {
+                Switch {
                     id: steamControllerStickStretchCheck
                     hoverEnabled: true
                     width: parent.width
@@ -3015,11 +3015,11 @@ Flickable {
             }
         }
 
-        GroupBox {
+        VibeGroupBox {
             id: advancedSettingsGroupBox
             width: (parent.width - (parent.leftPadding + parent.rightPadding))
             padding: 12
-            title: "<font color=\"skyblue\">" + qsTr("Advanced Settings") + "</font>"
+            title: "<font color=\"" + Theme.accent2 + "\">" + qsTr("Advanced Settings") + "</font>"
             font.pointSize: 12
 
             Column {
@@ -3130,7 +3130,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: unlockBitrate
                     width: parent.width
                     text: qsTr("Unlock bitrate limit (Experimental)")
@@ -3149,7 +3149,7 @@ Flickable {
                     ToolTip.text: qsTr("This unlocks extremely high video bitrates for use with Sunshine hosts. It should only be used when streaming over an Ethernet LAN connection.")
                 }
 
-                CheckBox {
+                Switch {
                     width: parent.width
                     text: qsTr("Notify me about prerelease and nightly updates")
                     font.pointSize: 12
@@ -3159,7 +3159,7 @@ Flickable {
                     ToolTip.text: qsTr("Enabled by default. Turn off to receive only stable update notifications. Updates are never installed automatically.")
                 }
 
-                CheckBox {
+                Switch {
                     id: enableMdns
                     width: parent.width
                     text: qsTr("Automatically find PCs on the local network (Recommended)")
@@ -3180,7 +3180,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: detectNetworkBlocking
                     width: parent.width
                     text: qsTr("Automatically detect blocked connections (Recommended)")
@@ -3191,7 +3191,7 @@ Flickable {
                     }
                 }
 
-                CheckBox {
+                Switch {
                     id: showPerformanceOverlay
                     width: parent.width
                     text: qsTr("Show performance stats while streaming")
@@ -3209,7 +3209,7 @@ Flickable {
                                   qsTr("The performance overlay is not supported on Steam Link or Raspberry Pi.")
                 }
 
-                CheckBox {
+                Switch {
                     id: showFrametimeGraph
                     width: parent.width
                     text: qsTr("Show frametime graph while streaming")

@@ -322,7 +322,8 @@ ApplicationWindow {
 
             NavigableToolButton {
                 id: discordButton
-                visible: SystemProperties.hasBrowser &&
+                // Hidden in Vibelight: this link goes to the upstream Moonlight community server
+                visible: false && SystemProperties.hasBrowser &&
                          stackView.currentItem instanceof SettingsView
 
                 iconSource: "qrc:/res/discord.svg"
@@ -404,7 +405,7 @@ ApplicationWindow {
 
                 function updateAvailable(version, url)
                 {
-                    ToolTip.text = qsTr("Update available for Moonlight: Version %1").arg(version)
+                    ToolTip.text = qsTr("Update available for Vibelight: Version %1").arg(version)
                     updateButton.browserUrl = url
                     updateButton.updateVersion = version
                     updateButton.visible = true

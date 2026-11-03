@@ -132,9 +132,9 @@ void AutoUpdateChecker::requestPage()
 {
     // The list includes published prereleases, which are used for VRR releases.
     // Never consult the upstream manifest or fall back to upstream releases.
-    QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/Nonary/moonlight-qt/releases?per_page=100&page=%1").arg(m_Page)));
+    QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/tleung927/vibelight/releases?per_page=100&page=%1").arg(m_Page)));
     request.setRawHeader("Accept", "application/vnd.github+json");
-    request.setRawHeader("User-Agent", "Moonlight-Nonary-UpdateChecker");
+    request.setRawHeader("User-Agent", "Vibelight-UpdateChecker");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute, true);
 #else
@@ -338,7 +338,7 @@ void AutoUpdateChecker::announce(const QJsonObject& update)
     const QString version = tag.startsWith('v') ? tag.mid(1) : tag;
     if (!notifyPrereleases() && update.value("prerelease").toBool()) return;
     if (QSettings().value("dismissedUpdates").toStringList().contains(version)) return;
-    emit onUpdateAvailable(version, QStringLiteral("https://github.com/Nonary/moonlight-qt/releases/tag/") + tag);
+    emit onUpdateAvailable(version, QStringLiteral("https://github.com/tleung927/vibelight/releases/tag/") + tag);
 }
 
 void AutoUpdateChecker::finishSelection()

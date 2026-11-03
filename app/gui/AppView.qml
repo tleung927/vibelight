@@ -129,6 +129,40 @@ import AppModel 1.0; AppModel {}', parent, '')
             ToolTip.visible: (parent.hovered || parent.highlighted) && (!appNameText || appNameText.truncated)
         }
 
+        // Running indicator, so a live session is visible even without hovering
+        Rectangle {
+            visible: model.running
+            anchors.left: appIcon.left
+            anchors.top: appIcon.top
+            anchors.margins: 8
+            width: runningRow.width + 18
+            height: 24
+            radius: height / 2
+            color: Qt.rgba(0, 0, 0, 0.6)
+            border.width: 1
+            border.color: Qt.rgba(Theme.online.r, Theme.online.g, Theme.online.b, 0.7)
+
+            Row {
+                id: runningRow
+                anchors.centerIn: parent
+                spacing: 6
+
+                Rectangle {
+                    width: 8; height: 8; radius: 4
+                    color: Theme.online
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label {
+                    text: qsTr("Running")
+                    font.pointSize: 10
+                    font.family: Theme.fontFamily
+                    color: Theme.online
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
         Loader {
             active: model.running
             asynchronous: true
@@ -206,7 +240,10 @@ import AppModel 1.0; AppModel {}', parent, '')
             sourceComponent: Label {
                 id: appNameText
                 text: model.name
-                font.pointSize: 22
+                font.pointSize: 18
+                font.weight: Font.DemiBold
+                font.family: Theme.fontFamily
+                color: Theme.text
                 leftPadding: 20
                 rightPadding: 20
                 verticalAlignment: Text.AlignVCenter
