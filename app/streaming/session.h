@@ -100,7 +100,7 @@ public:
 
 // Pushed as an SDL_USEREVENT code by BossKey to ask the session to hide or
 // restore its window from its own event loop
-#define SDL_CODE_TOGGLE_BOSS_KEY 106
+#define SDL_CODE_TOGGLE_BOSS_KEY 107
 
 class Session : public QObject
 {

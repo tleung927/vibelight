@@ -40,7 +40,7 @@
 #define SDL_CODE_GAMECONTROLLER_SET_MOTION_EVENT_STATE 103
 #define SDL_CODE_GAMECONTROLLER_SET_CONTROLLER_LED 104
 #define SDL_CODE_GAMECONTROLLER_SET_ADAPTIVE_TRIGGERS 105
-// NB: SDL_CODE_TOGGLE_BOSS_KEY (106) lives in session.h so BossKey can use it too
+// NB: SDL_CODE_TOGGLE_BOSS_KEY (107) lives in session.h so BossKey can use it too
 
 #ifdef Q_OS_WIN32
 #include "bosskey.h"
