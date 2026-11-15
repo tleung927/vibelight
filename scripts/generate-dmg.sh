@@ -32,7 +32,11 @@ fi
 [ "$SIGNING_IDENTITY" == "" ] || git diff-index --quiet HEAD -- || fail "Signed release builds must not have unstaged changes!"
 
 echo Updating dependencies
-python3 $SOURCE_ROOT/setup-deps.py
+# SKIP_DEPS=1 reuses an existing libs/mac (for example after a manual download)
+if [ -z "$SKIP_DEPS" ]; then
+  python3 $SOURCE_ROOT/setup-deps.py || fail "Dependency download failed!"
+fi
+[ -d $SOURCE_ROOT/libs/mac/include/openssl ] || fail "libs/mac is missing; run setup-deps.py"
 
 echo Cleaning output directories
 rm -rf $BUILD_FOLDER
@@ -126,13 +130,16 @@ echo Creating DMG
 if [ "$SIGNING_IDENTITY" != "" ]; then
   create-dmg $APP_BUNDLE $INSTALLER_FOLDER --identity="$SIGNING_IDENTITY" --no-version-in-filename || fail "create-dmg failed!"
 else
-  # Keep unsigned builds unverified even if this machine has a signing identity.
-  create-dmg $APP_BUNDLE $INSTALLER_FOLDER --no-version-in-filename --no-code-sign
-  case $? in
-    0) ;;
-    2) ;;
-    *) fail "create-dmg failed!";;
-  esac
+  # Unsigned builds use the built-in hdiutil, so they need neither the npm
+  # create-dmg (sindresorhus) nor its codesign step. Homebrew's "create-dmg"
+  # formula is a different tool with incompatible arguments.
+  DMG_STAGE=$BUILD_ROOT/dmg-stage
+  rm -rf $DMG_STAGE
+  mkdir -p $DMG_STAGE || fail "DMG staging failed!"
+  cp -R $APP_BUNDLE $DMG_STAGE/ || fail "DMG staging failed!"
+  ln -s /Applications $DMG_STAGE/Applications
+  hdiutil create -volname Vibelight -srcfolder $DMG_STAGE -fs HFS+ -format UDZO -ov $INSTALLER_FOLDER/Vibelight.dmg || fail "hdiutil failed!"
+  rm -rf $DMG_STAGE
 fi
 
 if [ "$NOTARY_KEYCHAIN_PROFILE" != "" ]; then
