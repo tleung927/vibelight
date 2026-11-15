@@ -23,3 +23,5 @@ config.tests/*/Makefile
 /app/qml_qmlcache.qrc
 /.qmake.cache
 /config.log
+
+.DS_Store
