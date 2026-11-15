@@ -62,6 +62,9 @@
 #include "backend/networkbuffers.h"
 #include "gui/sdlgamepadkeynavigation.h"
 #include "windowsvblankvirtualization.h"
+#ifdef Q_OS_DARWIN
+#include "streaming/awdlsuspend.h"
+#endif
 
 #if defined(Q_OS_WIN32)
 #define IS_UNSPECIFIED_HANDLE(x) ((x) == INVALID_HANDLE_VALUE || (x) == NULL)
@@ -827,6 +830,9 @@ int main(int argc, char *argv[])
     // the user to enable a system accessibility setting. Other platforms already
     // default to this behavior.
     app.styleHints()->setTabFocusBehavior(Qt::TabFocusAllControls);
+
+    // If the last run died mid-stream with AWDL paused, bring AirDrop/Continuity back.
+    AwdlSuspendHold::recoverAfterCrash();
 #endif
 
 #ifdef Q_OS_UNIX

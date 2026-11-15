@@ -81,25 +81,32 @@ fi
 echo Removing dSYM files from app bundle
 find $BUILD_FOLDER/app/Moonlight.app/ -name '*.dSYM' | xargs rm -rf
 
+# Vibelight: ship the bundle as Vibelight.app. The executable inside stays
+# "Moonlight" (CFBundleExecutable), so the steps above are unchanged.
+echo Renaming app bundle to Vibelight.app
+rm -rf $BUILD_FOLDER/app/Vibelight.app
+mv $BUILD_FOLDER/app/Moonlight.app $BUILD_FOLDER/app/Vibelight.app || fail "Bundle rename failed!"
+APP_BUNDLE=$BUILD_FOLDER/app/Vibelight.app
+
 if [ "$SIGNING_IDENTITY" != "" ]; then
   echo Signing app bundle
-  codesign --force --deep --options runtime --timestamp --sign "$SIGNING_IDENTITY" $BUILD_FOLDER/app/Moonlight.app || fail "Signing failed!"
+  codesign --force --deep --options runtime --timestamp --sign "$SIGNING_IDENTITY" $APP_BUNDLE || fail "Signing failed!"
 else
   # Seal the app and its non-Qt dependencies after all metadata and resource
   # edits. Deployment-time ad hoc signatures may be stale or incomplete. This
   # is not a Developer ID signature and does not make the nightly notarized.
   echo Ad-hoc signing completed app bundle
-  codesign --force --deep --sign - "$BUILD_FOLDER/app/Moonlight.app" || fail "Ad-hoc signing failed!"
+  codesign --force --deep --sign - "$APP_BUNDLE" || fail "Ad-hoc signing failed!"
 fi
 
-codesign --verify --deep --strict "$BUILD_FOLDER/app/Moonlight.app" || fail "App bundle signature verification failed!"
+codesign --verify --deep --strict "$APP_BUNDLE" || fail "App bundle signature verification failed!"
 
 echo Creating DMG
 if [ "$SIGNING_IDENTITY" != "" ]; then
-  create-dmg $BUILD_FOLDER/app/Moonlight.app $INSTALLER_FOLDER --identity="$SIGNING_IDENTITY" --no-version-in-filename || fail "create-dmg failed!"
+  create-dmg $APP_BUNDLE $INSTALLER_FOLDER --identity="$SIGNING_IDENTITY" --no-version-in-filename || fail "create-dmg failed!"
 else
   # Keep unsigned builds unverified even if this machine has a signing identity.
-  create-dmg $BUILD_FOLDER/app/Moonlight.app $INSTALLER_FOLDER --no-version-in-filename --no-code-sign
+  create-dmg $APP_BUNDLE $INSTALLER_FOLDER --no-version-in-filename --no-code-sign
   case $? in
     0) ;;
     2) ;;
@@ -109,11 +116,12 @@ fi
 
 if [ "$NOTARY_KEYCHAIN_PROFILE" != "" ]; then
   echo Uploading to App Notary service
-  xcrun notarytool submit --keychain-profile "$NOTARY_KEYCHAIN_PROFILE" --wait $INSTALLER_FOLDER/Moonlight.dmg || fail "Notary submission failed"
+  xcrun notarytool submit --keychain-profile "$NOTARY_KEYCHAIN_PROFILE" --wait $INSTALLER_FOLDER/Vibelight.dmg || fail "Notary submission failed"
 
   echo Stapling notary ticket to DMG
-  xcrun stapler staple -v $INSTALLER_FOLDER/Moonlight.dmg || fail "Notary ticket stapling failed!"
+  xcrun stapler staple -v $INSTALLER_FOLDER/Vibelight.dmg || fail "Notary ticket stapling failed!"
 fi
 
-mv $INSTALLER_FOLDER/Moonlight.dmg $INSTALLER_FOLDER/Moonlight-$VERSION.dmg
+# create-dmg names the image after CFBundleDisplayName (Vibelight)
+mv $INSTALLER_FOLDER/Vibelight.dmg $INSTALLER_FOLDER/Vibelight-$VERSION.dmg
 echo Build successful

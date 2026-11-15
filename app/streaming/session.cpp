@@ -12,6 +12,9 @@
 #include "streaming/vrrratepolicy.h"
 #include "backend/richpresencemanager.h"
 #include "streaming/gpuperformancehold.h"
+#ifdef Q_OS_DARWIN
+#include "streaming/awdlsuspend.h"
+#endif
 #include "backend/networkbuffers.h"
 
 #include <Limelight.h>
@@ -2346,6 +2349,12 @@ void Session::exec()
     // Hold the display GPU at high-performance clocks if requested
     GpuPerformanceHold gpuPerformance(m_Preferences->highPerformanceGpuPower);
 
+#ifdef Q_OS_DARWIN
+    // Pause AWDL (AirDrop/Continuity) so the Wi-Fi radio stays on the router's
+    // channel; it is restored when this scope ends, on every exit path.
+    AwdlSuspendHold awdlSuspend(m_Preferences->pauseAwdlDuringStream);
+#endif
+
     // Toggle the stats overlay if requested by the user
     m_OverlayManager.setOverlayState(Overlay::OverlayDebug, m_Preferences->showPerformanceOverlay);
     m_OverlayManager.setTimingGraphState(m_Preferences->showFrametimeGraph);
@@ -2469,6 +2478,7 @@ void Session::exec()
                 break;
             case SDL_CODE_STEAM_CONTROLLER_LINK:
                 m_InputHandler->handleSteamControllerEvent(&event.user);
+                break;
             case SDL_CODE_TOGGLE_BOSS_KEY:
                 toggleBossKeyHide();
                 break;

@@ -2594,6 +2594,38 @@ Flickable {
 " +
                                   qsTr("NOTE: Ctrl+` is captured system-wide while Moonlight is running, so it will not reach your host PC or any other application.")
                 }
+
+                Switch {
+                    id: pauseAwdlCheck
+                    hoverEnabled: true
+                    width: parent.width
+                    text: qsTr("Pause AirDrop/Continuity Wi-Fi (AWDL) while streaming")
+                    font.pointSize: 12
+                    visible: SystemProperties.isDarwin
+                    checked: StreamingPreferences.pauseAwdlDuringStream
+                    // onToggled fires only for user clicks, so reverting
+                    // after a cancelled password prompt does not loop.
+                    onToggled: {
+                        if (checked) {
+                            // Shows the macOS admin prompt once to allow
+                            // "ifconfig awdl0 down/up" without a password.
+                            if (!SystemProperties.installAwdlHelper()) {
+                                checked = false
+                                return
+                            }
+                        }
+                        else {
+                            SystemProperties.uninstallAwdlHelper()
+                        }
+                        StreamingPreferences.pauseAwdlDuringStream = checked
+                    }
+
+                    ToolTip.delay: 1000
+                    ToolTip.timeout: 10000
+                    ToolTip.visible: hovered
+                    ToolTip.text: qsTr("Fixes Wi-Fi latency spikes during streams. AirDrop, iPhone Mirroring and Handoff are unavailable while a stream runs and come back when it ends.") + "\n\n" +
+                                  qsTr("Turning this on asks for your admin password once, to allow only \"ifconfig awdl0 down\" and \"ifconfig awdl0 up\". Turning it off removes that permission.")
+                }
             }
         }
 

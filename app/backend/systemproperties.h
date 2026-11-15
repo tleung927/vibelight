@@ -45,6 +45,11 @@ public:
     Q_INVOKABLE void waitForAsyncLoad();
     Q_INVOKABLE void refreshDisplays();
 
+    // macOS only: the one-time admin permission for pausing AWDL during streams
+    Q_INVOKABLE bool isAwdlHelperInstalled();
+    Q_INVOKABLE bool installAwdlHelper();
+    Q_INVOKABLE bool uninstallAwdlHelper();
+
 signals:
     void unmappedGamepadsChanged();
     void hasHardwareAccelerationChanged();

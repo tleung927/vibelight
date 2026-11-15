@@ -23,6 +23,8 @@ contains(CONFIG, tests) {
     macx {
         controllerNavigation.file = $$PWD/qml/controller-navigation.pro
         SUBDIRS += controllerNavigation
+        awdlSuspend.file = $$PWD/network/awdlsuspend.pro
+        SUBDIRS += awdlSuspend
     } else:unix:packagesExist(sdl2) {
         controllerNavigation.file = $$PWD/qml/controller-navigation.pro
         SUBDIRS += controllerNavigation

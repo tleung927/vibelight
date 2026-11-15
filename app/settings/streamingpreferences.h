@@ -214,6 +214,7 @@ public:
     Q_PROPERTY(bool swapFaceButtons MEMBER swapFaceButtons NOTIFY swapFaceButtonsChanged)
     Q_PROPERTY(bool keepAwake MEMBER keepAwake NOTIFY keepAwakeChanged)
     Q_PROPERTY(bool bossKeyEnabled MEMBER bossKeyEnabled NOTIFY bossKeyEnabledChanged)
+    Q_PROPERTY(bool pauseAwdlDuringStream MEMBER pauseAwdlDuringStream NOTIFY pauseAwdlDuringStreamChanged)
     Q_PROPERTY(CaptureSysKeysMode captureSysKeysMode MEMBER captureSysKeysMode NOTIFY captureSysKeysModeChanged)
     Q_PROPERTY(bool steamControllerDriver MEMBER steamControllerDriver NOTIFY steamControllerChanged)
     Q_PROPERTY(bool steamControllerMotion MEMBER steamControllerMotion NOTIFY steamControllerChanged)
@@ -277,6 +278,7 @@ public:
     bool swapFaceButtons;
     bool keepAwake;
     bool bossKeyEnabled;
+    bool pauseAwdlDuringStream;
     int packetSize;
     int pyroWavePaceMbps;
     AudioConfig audioConfig;
@@ -352,6 +354,7 @@ signals:
     void steamControllerChanged();
     void keepAwakeChanged();
     void bossKeyEnabledChanged();
+    void pauseAwdlDuringStreamChanged();
     void languageChanged();
     void rendererSelectionChanged();
 

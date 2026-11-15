@@ -9,7 +9,35 @@
 
 #ifdef Q_OS_DARWIN
 #include "streaming/video/ffmpeg-renderers/macdisplaytiming.h"
+#include "streaming/awdlsuspend.h"
 #endif
+
+bool SystemProperties::isAwdlHelperInstalled()
+{
+#ifdef Q_OS_DARWIN
+    return AwdlSuspendHold::isHelperInstalled();
+#else
+    return false;
+#endif
+}
+
+bool SystemProperties::installAwdlHelper()
+{
+#ifdef Q_OS_DARWIN
+    return AwdlSuspendHold::isHelperInstalled() || AwdlSuspendHold::installHelper();
+#else
+    return false;
+#endif
+}
+
+bool SystemProperties::uninstallAwdlHelper()
+{
+#ifdef Q_OS_DARWIN
+    return !AwdlSuspendHold::isHelperInstalled() || AwdlSuspendHold::uninstallHelper();
+#else
+    return true;
+#endif
+}
 
 #ifdef Q_OS_WIN32
 #define WIN32_LEAN_AND_MEAN

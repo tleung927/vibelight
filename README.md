@@ -36,7 +36,23 @@ Vibelight builds on the features of [Nonary/moonlight-qt](https://github.com/Non
 
 ## Building from source
 
-Releases are built on Windows x64 only. The other platforms' code from upstream is untouched and has not been built for Vibelight.
+Releases are built on Windows x64. macOS (Apple silicon) also builds, see below. Linux code from upstream is untouched and has not been built for Vibelight.
+
+### macOS
+
+Needs the Xcode Command Line Tools and Homebrew. From the repository root:
+
+```sh
+brew install qt create-dmg
+git submodule update --init --recursive
+PATH=/opt/homebrew/opt/qt/bin:$PATH ./scripts/generate-dmg.sh Release
+```
+
+This produces `build/installer-Release/Vibelight-x.y.z.dmg` containing `Vibelight.app`. The app is ad-hoc signed, not notarized: the first time, right-click it and choose **Open**. It reads the same settings and paired PCs as Moonlight.
+
+**Pause AWDL while streaming** (Settings, Input Settings, macOS only). AWDL is the Wi-Fi link behind AirDrop, Handoff and iPhone Mirroring. While it is active the Mac's radio leaves the router's channel now and then, which shows up as 20-100 ms latency spikes in the stream. With this on, Vibelight takes `awdl0` down when a stream starts and brings it back when the stream ends (or on the next launch, if Vibelight crashed). Turning it on asks for your admin password once, to add `/etc/sudoers.d/vibelight-awdl`, which allows only `ifconfig awdl0 down` and `ifconfig awdl0 up` without a password. Turning it off removes that file.
+
+### Windows
 
 You need:
 

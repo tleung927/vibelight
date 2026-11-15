@@ -518,9 +518,11 @@ macx {
         streaming/video/ffmpeg-renderers/vt_base.mm \
         streaming/video/ffmpeg-renderers/vt_avsamplelayer.mm \
         streaming/video/ffmpeg-renderers/vt_metal.mm \
-        streaming/video/ffmpeg-renderers/macdisplaytiming.mm
+        streaming/video/ffmpeg-renderers/macdisplaytiming.mm \
+        streaming/awdlsuspend.mm
 
     HEADERS += \
+        streaming/awdlsuspend.h \
         streaming/video/ffmpeg-renderers/vt.h \
         streaming/video/ffmpeg-renderers/macdisplaytiming.h
 }
