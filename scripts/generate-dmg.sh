@@ -48,7 +48,9 @@ export LDFLAGS=-flto=thin
 
 echo Configuring the project
 pushd $BUILD_FOLDER
-qmake $SOURCE_ROOT/moonlight-qt.pro QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64" || fail "Qmake failed!"
+# Universal by default; set MAC_ARCHS=arm64 when building against an
+# arm64-only Qt such as Homebrew's.
+qmake $SOURCE_ROOT/moonlight-qt.pro QMAKE_APPLE_DEVICE_ARCHS="${MAC_ARCHS:-x86_64 arm64}" || fail "Qmake failed!"
 popd
 
 echo Compiling Moonlight in $BUILD_CONFIG configuration
@@ -67,6 +69,25 @@ EXTRA_ARGS=
 if [ "$BUILD_CONFIG" == "Debug" ]; then EXTRA_ARGS="$EXTRA_ARGS -use-debug-libs"; fi
 echo Extra deployment arguments: $EXTRA_ARGS
 macdeployqt $BUILD_FOLDER/app/Moonlight.app $EXTRA_ARGS -qmldir=$SOURCE_ROOT/app/gui -appstore-compliant || fail "macdeployqt failed!"
+
+# Homebrew Qt ships optional plugins (PDF, 3D, virtual keyboard, ...) whose
+# frameworks are not installed, so macdeployqt copies them without their
+# dependencies. The app never loads them; drop any plugin with an unresolved
+# @rpath dependency, then the QML module folders left with dangling links.
+echo Removing plugins with missing dependencies
+CONTENTS=$BUILD_FOLDER/app/Moonlight.app/Contents
+find "$CONTENTS/PlugIns" -name '*.dylib' | while read -r plugin; do
+  for dep in $(otool -L "$plugin" | tail -n +2 | awk '{print $1}' | grep '^@rpath/'); do
+    if [ ! -e "$CONTENTS/Frameworks/${dep#@rpath/}" ]; then
+      echo "  $plugin"
+      rm -f "$plugin"
+      break
+    fi
+  done
+done
+find "$CONTENTS" -type l ! -exec test -e {} \; -print | xargs -n1 dirname | sort -u | while read -r dir; do
+  rm -rf "$dir"
+done
 
 # Apple bundle versions remain numeric; nightly identity and source are explicit.
 if [[ "$VERSION" =~ ^6\.[12]\.0-daily\.([1-9][0-9]*)$ ]]; then
