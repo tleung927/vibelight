@@ -19,10 +19,16 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:statusBarColor">#1A1A1A</item>
-        <item name="android:navigationBarColor">#1A1A1A</item>
-        <item name="android:colorBackground">#1A1A1A</item>
-        <item name="android:windowBackground">#1A1A1A</item>
+        <!-- Vibelight palette (matches app/gui/Theme.qml on desktop) -->
+        <item name="android:statusBarColor">#0E1015</item>
+        <item name="android:navigationBarColor">#0E1015</item>
+        <item name="android:colorBackground">#0E1015</item>
+        <item name="android:windowBackground">#0E1015</item>
+        <item name="colorPrimary">#8B7CFF</item>
+        <item name="colorSecondary">#3DD6F5</item>
+        <item name="colorAccent">#8B7CFF</item>
+        <item name="android:colorAccent">#8B7CFF</item>
+        <item name="colorControlActivated">#8B7CFF</item>
     </style>
 
     <style name="StreamBaseTheme" parent="AppBaseTheme">
